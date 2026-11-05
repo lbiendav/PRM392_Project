@@ -7,6 +7,7 @@ import 'core/services/fcm_service.dart';
 import 'core/services/shared_prefs_service.dart';
 import 'core/theme/app_theme.dart';
 import 'providers/theme_provider.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +17,9 @@ Future<void> main() async {
 
   // 2. Khởi tạo Firebase
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     // 3. Khởi tạo FCM Service
     await FCMService().initialize();
   } catch (e) {
