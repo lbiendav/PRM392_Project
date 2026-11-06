@@ -8,6 +8,7 @@ import 'core/services/shared_prefs_service.dart';
 import 'core/theme/app_theme.dart';
 import 'providers/theme_provider.dart';
 import 'firebase_options.dart';
+import 'views/auth/onboarding_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +22,7 @@ Future<void> main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     // 3. Khởi tạo FCM Service
-    await FCMService().initialize();
+    // await FCMService().initialize();
   } catch (e) {
     debugPrint('Firebase/FCM initialize note: $e');
   }
@@ -46,7 +47,8 @@ class CoffeeCraftApp extends ConsumerWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
-      home: const WelcomeScreenPlaceholder(),
+      // home: const WelcomeScreenPlaceholder(),
+      home: const OnboardingScreen(),
     );
   }
 }
