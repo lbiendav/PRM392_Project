@@ -6,6 +6,8 @@ import '../../core/services/shared_prefs_service.dart';
 import '../../core/utils/snackbar_utils.dart';
 import '../../core/utils/validators.dart';
 import '../../providers/auth_provider.dart';
+import 'forgot_password_screen.dart';
+import 'register_screen.dart';
 
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -225,11 +227,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       const Spacer(),
                       TextButton(
                         onPressed: () {
-                          // Navigator.of(context).push(
-                          //   MaterialPageRoute(
-                          //     builder: (_) => const ForgotPasswordScreen(),
-                          //   ),
-                          // );
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const ForgotPasswordScreen(),
+                            ),
+                          );
                         },
                         child: const Text(
                           'Quên mật khẩu?',
@@ -341,11 +343,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          // Navigator.of(context).push(
-                          //   MaterialPageRoute(
-                          //     builder: (_) => const RegisterScreen(),
-                          //   ),
-                          // );
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const RegisterScreen(),
+                            ),
+                          );
                         },
                         child: const Text(
                           'Đăng ký ngay',

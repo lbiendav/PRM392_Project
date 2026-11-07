@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_text_styles.dart';
 import '../../providers/auth_provider.dart';
+import 'login_screen.dart';
 
 // Model mô tả nội dung của từng trang slide
 class OnboardingItem {
@@ -66,9 +67,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     if (!mounted) return;
 
     // 2. Thay thế OnboardingScreen bằng LoginScreen (người dùng không thể Back lại)
-    // Navigator.of(context).pushReplacement(
-    //   MaterialPageRoute(builder: (_) => const LoginScreen()),
-    // );
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+    );
   }
 
   void _onNext() {
