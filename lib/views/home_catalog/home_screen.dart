@@ -12,10 +12,12 @@ import 'widgets/product_tile.dart';
 class HomeScreen extends ConsumerWidget {
   final ValueChanged<ProductModel> onOpenProduct;
   final VoidCallback onOpenCart;
+  final VoidCallback? onLogout;
   const HomeScreen({
     super.key,
     required this.onOpenProduct,
     required this.onOpenCart,
+    this.onLogout,
   });
 
   void _category(WidgetRef ref, String category) {
@@ -55,6 +57,12 @@ class HomeScreen extends ConsumerWidget {
               label: Text('Giỏ ($count)'),
             ),
           ),
+          if (onLogout != null)
+            IconButton(
+              tooltip: 'Đăng xuất',
+              onPressed: onLogout,
+              icon: const Icon(Icons.logout),
+            ),
         ],
       ),
       body: RefreshIndicator(
@@ -83,7 +91,7 @@ class HomeScreen extends ConsumerWidget {
                     .map(
                       (entry) => Padding(
                         padding: const EdgeInsets.only(right: 8),
-                      child: FilterChip(
+                        child: FilterChip(
                           label: Text(entry.value),
                           selected: selectedCategory == entry.key,
                           onSelected: (_) => _category(ref, entry.key),

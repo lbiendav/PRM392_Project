@@ -12,7 +12,20 @@
           "package_name": "com.example.prm_project"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1069736494742-b4l1h20tu53lic0seirdo7sij59q70vs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.prm_project",
+            "certificate_hash": "79bc12b8a5540d790b993dbbabefc73087dddf4c"
+          }
+        },
+        {
+          "client_id": "1069736494742-08u34koadvjan6a3o4kgnfqmmu1rbe3u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDpJALBb9bS9HE3ctQ0ADZAzJrAIiZYcfA"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1069736494742-08u34koadvjan6a3o4kgnfqmmu1rbe3u.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1069736494742-0u70v15fibjts29lo762nn8hpv3h2t09.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.prmProject"
+              }
+            }
+          ]
         }
       }
     }

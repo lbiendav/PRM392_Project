@@ -56,22 +56,24 @@ class DefaultFirebaseOptions {
     projectId: 'prm-project-f59a0',
     storageBucket: 'prm-project-f59a0.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDoYKTScW_leavaZBp0T3CWiYMWo0P8qzw',
     appId: '1:1069736494742:ios:35bb097be2ec1bd17664b7',
     messagingSenderId: '1069736494742',
     projectId: 'prm-project-f59a0',
     storageBucket: 'prm-project-f59a0.firebasestorage.app',
+    androidClientId: '1069736494742-b4l1h20tu53lic0seirdo7sij59q70vs.apps.googleusercontent.com',
+    iosClientId: '1069736494742-0u70v15fibjts29lo762nn8hpv3h2t09.apps.googleusercontent.com',
     iosBundleId: 'com.example.prmProject',
   );
-
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyDoYKTScW_leavaZBp0T3CWiYMWo0P8qzw',
     appId: '1:1069736494742:ios:35bb097be2ec1bd17664b7',
     messagingSenderId: '1069736494742',
     projectId: 'prm-project-f59a0',
     storageBucket: 'prm-project-f59a0.firebasestorage.app',
+    androidClientId: '1069736494742-b4l1h20tu53lic0seirdo7sij59q70vs.apps.googleusercontent.com',
+    iosClientId: '1069736494742-0u70v15fibjts29lo762nn8hpv3h2t09.apps.googleusercontent.com',
     iosBundleId: 'com.example.prmProject',
   );
 
