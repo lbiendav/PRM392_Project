@@ -3,13 +3,22 @@ import '../core/constants/app_constants.dart';
 import '../models/product_model.dart';
 
 class ProductRepository {
-  final FirebaseFirestore _firestore;
+  final FirebaseFirestore? firestore;
 
-  ProductRepository({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+  ProductRepository({this.firestore});
 
   CollectionReference<Map<String, dynamic>> get _productsCol =>
-      _firestore.collection(AppConstants.colProducts);
+      (firestore ?? FirebaseFirestore.instance).collection(
+        AppConstants.colProducts,
+      );
+
+  Stream<List<ProductModel>> watchProducts() {
+    return _productsCol.snapshots().map(
+      (snapshot) => snapshot.docs
+          .map((doc) => ProductModel.fromMap(doc.data(), doc.id))
+          .toList(),
+    );
+  }
 
   /// Lấy danh sách sản phẩm theo danh mục (hoặc toàn bộ)
   Future<List<ProductModel>> getProducts({String? category}) async {
