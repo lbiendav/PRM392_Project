@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/catalog_theme.dart';
 import 'firebase_options.dart';
 import 'models/product_model.dart';
+import 'views/home_catalog/category_menu_screen.dart';
 import 'views/home_catalog/home_screen.dart';
 import 'views/product_cart/cart_summary_sheet.dart';
 import 'views/product_cart/product_detail_screen.dart';
@@ -27,6 +28,22 @@ class CatalogApp extends StatelessWidget {
       darkTheme: buildCatalogTheme(Brightness.dark),
       home: Builder(
         builder: (context) => HomeScreen(
+          onOpenCategory: (category) {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => CategoryMenuScreen(
+                  initialCategory: category,
+                  onOpenProduct: (product) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => ProductDetailScreen(product: product),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            );
+          },
           onOpenProduct: (ProductModel product) {
             Navigator.of(context).push(
               MaterialPageRoute<void>(

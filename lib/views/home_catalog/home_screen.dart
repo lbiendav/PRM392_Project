@@ -11,17 +11,20 @@ import 'widgets/product_tile.dart';
 
 class HomeScreen extends ConsumerWidget {
   final ValueChanged<ProductModel> onOpenProduct;
+  final ValueChanged<String>? onOpenCategory;
   final VoidCallback onOpenCart;
   final VoidCallback? onLogout;
   const HomeScreen({
     super.key,
     required this.onOpenProduct,
     required this.onOpenCart,
+    this.onOpenCategory,
     this.onLogout,
   });
 
   void _category(WidgetRef ref, String category) {
     ref.read(homeCategoryViewModelProvider.notifier).selectCategory(category);
+    onOpenCategory?.call(category);
   }
 
   Future<void> _refresh(BuildContext context, WidgetRef ref) async {
