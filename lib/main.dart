@@ -11,6 +11,7 @@ import 'firebase_options.dart';
 import 'models/product_model.dart';
 import 'views/auth/login_screen.dart';
 import 'views/auth/onboarding_screen.dart';
+import 'views/home_catalog/category_menu_screen.dart';
 import 'views/home_catalog/home_screen.dart';
 import 'views/product_cart/cart_summary_sheet.dart';
 import 'views/product_cart/product_detail_screen.dart';
@@ -66,6 +67,22 @@ class AuthGate extends ConsumerWidget {
 
     if (authState.isAuthenticated) {
       return HomeScreen(
+        onOpenCategory: (category) {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => CategoryMenuScreen(
+                initialCategory: category,
+                onOpenProduct: (product) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => ProductDetailScreen(product: product),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        },
         onOpenProduct: (ProductModel product) {
           Navigator.of(context).push(
             MaterialPageRoute<void>(
