@@ -8,6 +8,8 @@ class OrderItemModel {
   final int quantity;
   final String size;
   final List<String> toppings;
+  final int? sugarPercent;
+  final String? iceLevel;
   final String note;
 
   const OrderItemModel({
@@ -18,8 +20,37 @@ class OrderItemModel {
     required this.quantity,
     this.size = 'M',
     this.toppings = const [],
+    this.sugarPercent,
+    this.iceLevel,
     this.note = '',
   });
+
+  String get configurationKey {
+    final sortedToppings = [...toppings]..sort();
+    return [
+      productId,
+      size,
+      price.toStringAsFixed(2),
+      sugarPercent?.toString() ?? '',
+      iceLevel ?? '',
+      ...sortedToppings,
+    ].join('|');
+  }
+
+  OrderItemModel copyWith({int? quantity}) {
+    return OrderItemModel(
+      productId: productId,
+      productName: productName,
+      imageUrl: imageUrl,
+      price: price,
+      quantity: quantity ?? this.quantity,
+      size: size,
+      toppings: toppings,
+      sugarPercent: sugarPercent,
+      iceLevel: iceLevel,
+      note: note,
+    );
+  }
 
   factory OrderItemModel.fromMap(Map<String, dynamic> map) {
     return OrderItemModel(
@@ -30,6 +61,8 @@ class OrderItemModel {
       quantity: (map['quantity'] as num?)?.toInt() ?? 1,
       size: map['size'] as String? ?? 'M',
       toppings: List<String>.from(map['toppings'] ?? const []),
+      sugarPercent: (map['sugarPercent'] as num?)?.toInt(),
+      iceLevel: map['iceLevel'] as String?,
       note: map['note'] as String? ?? '',
     );
   }
@@ -43,6 +76,8 @@ class OrderItemModel {
       'quantity': quantity,
       'size': size,
       'toppings': toppings,
+      if (sugarPercent != null) 'sugarPercent': sugarPercent,
+      if (iceLevel != null) 'iceLevel': iceLevel,
       'note': note,
     };
   }
@@ -57,7 +92,8 @@ class OrderModel {
   final double shippingFee;
   final double totalAmount;
   final String deliveryType; // 'delivery' | 'pickup'
-  final String status; // 'pending' -> 'preparing' -> 'delivering' -> 'completed' -> 'cancelled'
+  final String
+  status; // 'pending' -> 'preparing' -> 'delivering' -> 'completed' -> 'cancelled'
   final String shippingAddress;
   final String recipientName;
   final String recipientPhone;

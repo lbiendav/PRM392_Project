@@ -27,6 +27,9 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
 
 class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   late String _selectedSize;
+  int _sugarPercent = 100;
+  String _iceLevel = 'normal';
+  final Set<String> _selectedToppings = {};
   int _quantity = 1;
 
   @override
@@ -40,7 +43,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   }
 
   double get _unitPrice =>
-      productPriceForSize(widget.product.price, _selectedSize);
+      productPriceForSize(widget.product.price, _selectedSize) +
+      widget.product.toppingOptions
+          .where((topping) => _selectedToppings.contains(topping.name))
+          .fold(0.0, (sum, topping) => sum + topping.price);
 
   void _addToCart() {
     ref
@@ -53,6 +59,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             price: _unitPrice,
             quantity: _quantity,
             size: _selectedSize,
+            toppings: _selectedToppings.toList()..sort(),
+            sugarPercent: widget.product.supportsDrinkOptions
+                ? _sugarPercent
+                : null,
+            iceLevel: widget.product.supportsDrinkOptions ? _iceLevel : null,
           ),
         );
 
@@ -123,6 +134,62 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 );
               }).toList(),
             ),
+          ],
+          if (product.supportsDrinkOptions) ...[
+            const SizedBox(height: 24),
+            Text('Lượng đường', style: theme.textTheme.titleMedium),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              children: [0, 30, 50, 70, 100].map((percent) {
+                return ChoiceChip(
+                  label: Text('$percent%'),
+                  selected: _sugarPercent == percent,
+                  onSelected: (_) => setState(() => _sugarPercent = percent),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20),
+            Text('Lượng đá', style: theme.textTheme.titleMedium),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              children:
+                  const {
+                    'normal': 'Bình thường',
+                    'less': 'Ít đá',
+                    'none': 'Không đá',
+                  }.entries.map((entry) {
+                    return ChoiceChip(
+                      label: Text(entry.value),
+                      selected: _iceLevel == entry.key,
+                      onSelected: (_) => setState(() => _iceLevel = entry.key),
+                    );
+                  }).toList(),
+            ),
+            if (product.toppingOptions.isNotEmpty) ...[
+              const SizedBox(height: 20),
+              Text('Topping', style: theme.textTheme.titleMedium),
+              ...product.toppingOptions.map(
+                (topping) => CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(topping.name),
+                  subtitle: Text(
+                    '+ ${AppFormatters.formatCurrency(topping.price)}',
+                  ),
+                  value: _selectedToppings.contains(topping.name),
+                  onChanged: (selected) {
+                    setState(() {
+                      if (selected ?? false) {
+                        _selectedToppings.add(topping.name);
+                      } else {
+                        _selectedToppings.remove(topping.name);
+                      }
+                    });
+                  },
+                ),
+              ),
+            ],
           ],
           const SizedBox(height: 24),
           Text('Số lượng', style: theme.textTheme.titleMedium),

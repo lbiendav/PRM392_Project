@@ -14,12 +14,23 @@ class CartSummarySheet extends ConsumerWidget {
         padding: const EdgeInsets.all(20),
         children: [
           Text('Giỏ hàng (${cart.totalItemCount})'),
-          ...cart.items.map(
-            (item) => ListTile(
+          ...cart.items.map((item) {
+            final options = [
+              if (item.sugarPercent != null) 'Đường ${item.sugarPercent}%',
+              if (item.iceLevel == 'less') 'Ít đá',
+              if (item.iceLevel == 'none') 'Không đá',
+              if (item.iceLevel == 'normal') 'Đá bình thường',
+              if (item.toppings.isNotEmpty)
+                'Topping: ${item.toppings.join(', ')}',
+            ];
+            return ListTile(
               title: Text(item.productName),
-              subtitle: Text('${item.quantity} × ${item.size}'),
-            ),
-          ),
+              subtitle: Text(
+                '${item.quantity} × ${item.size}'
+                '${options.isEmpty ? '' : ' • ${options.join(' • ')}'}',
+              ),
+            );
+          }),
         ],
       ),
     );
