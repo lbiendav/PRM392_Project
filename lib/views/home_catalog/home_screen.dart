@@ -12,6 +12,8 @@ import 'widgets/product_tile.dart';
 class HomeScreen extends ConsumerWidget {
   final ValueChanged<ProductModel> onOpenProduct;
   final ValueChanged<String>? onOpenCategory;
+  final VoidCallback? onOpenSearch;
+  final VoidCallback? onOpenBranch;
   final VoidCallback onOpenCart;
   final VoidCallback? onLogout;
   const HomeScreen({
@@ -19,6 +21,8 @@ class HomeScreen extends ConsumerWidget {
     required this.onOpenProduct,
     required this.onOpenCart,
     this.onOpenCategory,
+    this.onOpenSearch,
+    this.onOpenBranch,
     this.onLogout,
   });
 
@@ -51,6 +55,13 @@ class HomeScreen extends ConsumerWidget {
         titleSpacing: 20,
         title: const Text('CoffeeCraft'),
         actions: [
+          if (onOpenSearch != null)
+            IconButton(
+              key: const Key('open-catalog-search'),
+              tooltip: 'Tìm kiếm',
+              onPressed: onOpenSearch,
+              icon: const Icon(Icons.search),
+            ),
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: TextButton.icon(
@@ -74,6 +85,10 @@ class HomeScreen extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
+            if (onOpenBranch != null) ...[
+              _BranchButton(onPressed: onOpenBranch!),
+              const SizedBox(height: 16),
+            ],
             CatalogBanner(
               onOpenCategory: (category) => _category(ref, category),
             ),
@@ -196,6 +211,26 @@ class HomeScreen extends ConsumerWidget {
               )
             : TextButton(onPressed: action, child: Text(subtitle)),
       ],
+    );
+  }
+}
+
+class _BranchButton extends ConsumerWidget {
+  final VoidCallback onPressed;
+  const _BranchButton({required this.onPressed});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final branch = ref.watch(selectedBranchProvider);
+    return OutlinedButton.icon(
+      key: const Key('open-store-branches'),
+      onPressed: onPressed,
+      icon: const Icon(Icons.location_on_outlined),
+      label: branch.when(
+        loading: () => const Text('Chọn cửa hàng'),
+        error: (error, stack) => const Text('Chọn cửa hàng'),
+        data: (value) => Text(value?.name ?? 'Chọn cửa hàng'),
+      ),
     );
   }
 }

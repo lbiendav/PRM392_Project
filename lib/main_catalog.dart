@@ -7,6 +7,8 @@ import 'firebase_options.dart';
 import 'models/product_model.dart';
 import 'views/home_catalog/category_menu_screen.dart';
 import 'views/home_catalog/home_screen.dart';
+import 'views/home_catalog/search_screen.dart';
+import 'views/home_catalog/store_branch_screen.dart';
 import 'views/product_cart/cart_summary_sheet.dart';
 import 'views/product_cart/product_detail_screen.dart';
 
@@ -28,6 +30,20 @@ class CatalogApp extends StatelessWidget {
       darkTheme: buildCatalogTheme(Brightness.dark),
       home: Builder(
         builder: (context) => HomeScreen(
+          onOpenSearch: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => SearchScreen(
+                onOpenProduct: (product) => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => ProductDetailScreen(product: product),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          onOpenBranch: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(builder: (_) => const StoreBranchScreen()),
+          ),
           onOpenCategory: (category) {
             Navigator.of(context).push(
               MaterialPageRoute<void>(

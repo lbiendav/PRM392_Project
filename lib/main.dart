@@ -13,6 +13,8 @@ import 'views/auth/login_screen.dart';
 import 'views/auth/onboarding_screen.dart';
 import 'views/home_catalog/category_menu_screen.dart';
 import 'views/home_catalog/home_screen.dart';
+import 'views/home_catalog/search_screen.dart';
+import 'views/home_catalog/store_branch_screen.dart';
 import 'views/product_cart/cart_summary_sheet.dart';
 import 'views/product_cart/product_detail_screen.dart';
 
@@ -67,6 +69,20 @@ class AuthGate extends ConsumerWidget {
 
     if (authState.isAuthenticated) {
       return HomeScreen(
+        onOpenSearch: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => SearchScreen(
+              onOpenProduct: (product) => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => ProductDetailScreen(product: product),
+                ),
+              ),
+            ),
+          ),
+        ),
+        onOpenBranch: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (_) => const StoreBranchScreen()),
+        ),
         onOpenCategory: (category) {
           Navigator.of(context).push(
             MaterialPageRoute<void>(

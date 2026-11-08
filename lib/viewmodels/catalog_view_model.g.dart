@@ -292,3 +292,244 @@ final class CategoryMenuProductsFamily extends $Family
   @override
   String toString() => r'categoryMenuProductsProvider';
 }
+
+@ProviderFor(SearchViewModel)
+final searchViewModelProvider = SearchViewModelProvider._();
+
+final class SearchViewModelProvider
+    extends $NotifierProvider<SearchViewModel, SearchState> {
+  SearchViewModelProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'searchViewModelProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$searchViewModelHash();
+
+  @$internal
+  @override
+  SearchViewModel create() => SearchViewModel();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SearchState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SearchState>(value),
+    );
+  }
+}
+
+String _$searchViewModelHash() => r'22213273ec08f058dcbc6ee4353997b114dbae53';
+
+abstract class _$SearchViewModel extends $Notifier<SearchState> {
+  SearchState build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<SearchState, SearchState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<SearchState, SearchState>,
+              SearchState,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(searchResults)
+final searchResultsProvider = SearchResultsProvider._();
+
+final class SearchResultsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<ProductModel>>,
+          AsyncValue<List<ProductModel>>,
+          AsyncValue<List<ProductModel>>
+        >
+    with $Provider<AsyncValue<List<ProductModel>>> {
+  SearchResultsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'searchResultsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$searchResultsHash();
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<List<ProductModel>>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AsyncValue<List<ProductModel>> create(Ref ref) {
+    return searchResults(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<List<ProductModel>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<List<ProductModel>>>(
+        value,
+      ),
+    );
+  }
+}
+
+String _$searchResultsHash() => r'7194c956fd375538a9277c061e554c00e6021795';
+
+@ProviderFor(BranchViewModel)
+final branchViewModelProvider = BranchViewModelProvider._();
+
+final class BranchViewModelProvider
+    extends $NotifierProvider<BranchViewModel, BranchListState> {
+  BranchViewModelProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'branchViewModelProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$branchViewModelHash();
+
+  @$internal
+  @override
+  BranchViewModel create() => BranchViewModel();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(BranchListState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<BranchListState>(value),
+    );
+  }
+}
+
+String _$branchViewModelHash() => r'131fec7ba8b8e802a8843cf274ede27a14dcae7a';
+
+abstract class _$BranchViewModel extends $Notifier<BranchListState> {
+  BranchListState build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<BranchListState, BranchListState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<BranchListState, BranchListState>,
+              BranchListState,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(visibleBranches)
+final visibleBranchesProvider = VisibleBranchesProvider._();
+
+final class VisibleBranchesProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<BranchModel>>,
+          AsyncValue<List<BranchModel>>,
+          AsyncValue<List<BranchModel>>
+        >
+    with $Provider<AsyncValue<List<BranchModel>>> {
+  VisibleBranchesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'visibleBranchesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$visibleBranchesHash();
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<List<BranchModel>>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AsyncValue<List<BranchModel>> create(Ref ref) {
+    return visibleBranches(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<List<BranchModel>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<List<BranchModel>>>(
+        value,
+      ),
+    );
+  }
+}
+
+String _$visibleBranchesHash() => r'f7b81caab2899e1491436acf2a33649ba4a12f05';
+
+@ProviderFor(selectedBranch)
+final selectedBranchProvider = SelectedBranchProvider._();
+
+final class SelectedBranchProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<BranchModel?>,
+          BranchModel?,
+          FutureOr<BranchModel?>
+        >
+    with $FutureModifier<BranchModel?>, $FutureProvider<BranchModel?> {
+  SelectedBranchProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'selectedBranchProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$selectedBranchHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<BranchModel?> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<BranchModel?> create(Ref ref) {
+    return selectedBranch(ref);
+  }
+}
+
+String _$selectedBranchHash() => r'1b29471ca6d21551b81abaa3590e8308c5cb3df1';
