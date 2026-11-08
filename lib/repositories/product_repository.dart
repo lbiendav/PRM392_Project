@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../core/constants/app_constants.dart';
 import '../models/product_model.dart';
@@ -14,9 +16,9 @@ class ProductRepository {
 
   Stream<List<ProductModel>> watchProducts() {
     return _productsCol.snapshots().map(
-      (snapshot) => snapshot.docs
-          .map((doc) => ProductModel.fromMap(doc.data(), doc.id))
-          .toList(),
+      (snapshot) => deduplicateProducts(
+        snapshot.docs.map((doc) => ProductModel.fromMap(doc.data(), doc.id)),
+      ),
     );
   }
 
@@ -28,9 +30,9 @@ class ProductRepository {
         query = query.where('category', isEqualTo: category);
       }
       final snapshot = await query.get();
-      return snapshot.docs
-          .map((doc) => ProductModel.fromMap(doc.data(), doc.id))
-          .toList();
+      return deduplicateProducts(
+        snapshot.docs.map((doc) => ProductModel.fromMap(doc.data(), doc.id)),
+      );
     } catch (e) {
       throw 'Không thể tải danh sách sản phẩm: $e';
     }
@@ -42,8 +44,44 @@ class ProductRepository {
         .where('isBestSeller', isEqualTo: true)
         .limit(10)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => ProductModel.fromMap(doc.data(), doc.id))
-            .toList());
+        .map(
+          (snapshot) => deduplicateProducts(
+            snapshot.docs.map(
+              (doc) => ProductModel.fromMap(doc.data(), doc.id),
+            ),
+          ),
+        );
   }
+}
+
+List<ProductModel> deduplicateProducts(Iterable<ProductModel> products) {
+  final seen = <String>{};
+  return products
+      .where((product) => seen.add(_productFingerprint(product)))
+      .toList();
+}
+
+String _productFingerprint(ProductModel product) {
+  final sizes = [...product.sizes]..sort();
+  final toppings = [...product.toppings]..sort();
+  final toppingOptions =
+      product.toppingOptions
+          .map((option) => [option.name.trim(), option.price])
+          .toList()
+        ..sort((a, b) => jsonEncode(a).compareTo(jsonEncode(b)));
+  return jsonEncode([
+    product.name.trim().toLowerCase(),
+    product.description.trim().toLowerCase(),
+    product.price,
+    product.imageUrl.trim(),
+    product.category,
+    product.supportsDrinkOptions,
+    sizes,
+    toppings,
+    toppingOptions,
+    product.rating,
+    product.reviewCount,
+    product.isBestSeller,
+    product.isAvailable,
+  ]);
 }
