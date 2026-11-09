@@ -29,6 +29,8 @@ class OrderItemModel {
     double? price,
     String? size,
     List<String>? toppings,
+    int? sugarPercent,
+    String? iceLevel,
     String? note,
   }) {
     return OrderItemModel(
@@ -39,6 +41,8 @@ class OrderItemModel {
       quantity: quantity ?? this.quantity,
       size: size ?? this.size,
       toppings: toppings ?? this.toppings,
+      sugarPercent: sugarPercent ?? this.sugarPercent,
+      iceLevel: iceLevel ?? this.iceLevel,
       note: note ?? this.note,
     );
   }
@@ -53,21 +57,6 @@ class OrderItemModel {
       iceLevel ?? '',
       ...sortedToppings,
     ].join('|');
-  }
-
-  OrderItemModel copyWith({int? quantity}) {
-    return OrderItemModel(
-      productId: productId,
-      productName: productName,
-      imageUrl: imageUrl,
-      price: price,
-      quantity: quantity ?? this.quantity,
-      size: size,
-      toppings: toppings,
-      sugarPercent: sugarPercent,
-      iceLevel: iceLevel,
-      note: note,
-    );
   }
 
   factory OrderItemModel.fromMap(Map<String, dynamic> map) {
