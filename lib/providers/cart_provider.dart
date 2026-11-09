@@ -6,8 +6,7 @@ class CartState {
 
   const CartState({this.items = const []});
 
-  int get totalItemCount =>
-      items.fold(0, (sum, item) => sum + item.quantity);
+  int get totalItemCount => items.fold(0, (sum, item) => sum + item.quantity);
 
   double get subtotal =>
       items.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
@@ -22,6 +21,19 @@ class CartNotifier extends StateNotifier<CartState> {
 
   void addItem(OrderItemModel item) {
     state = state.copyWith(items: [...state.items, item]);
+  }
+
+  void updateQuantity(int index, int quantity) {
+    if (index < 0 || index >= state.items.length) return;
+
+    if (quantity <= 0) {
+      removeItem(index);
+      return;
+    }
+
+    final list = [...state.items];
+    list[index] = list[index].copyWith(quantity: quantity);
+    state = state.copyWith(items: list);
   }
 
   void removeItem(int index) {

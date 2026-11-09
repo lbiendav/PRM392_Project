@@ -20,6 +20,24 @@ class OrderItemModel {
     this.toppings = const [],
     this.note = '',
   });
+  OrderItemModel copyWith({
+    int? quantity,
+    double? price,
+    String? size,
+    List<String>? toppings,
+    String? note,
+  }) {
+    return OrderItemModel(
+      productId: productId,
+      productName: productName,
+      imageUrl: imageUrl,
+      price: price ?? this.price,
+      quantity: quantity ?? this.quantity,
+      size: size ?? this.size,
+      toppings: toppings ?? this.toppings,
+      note: note ?? this.note,
+    );
+  }
 
   factory OrderItemModel.fromMap(Map<String, dynamic> map) {
     return OrderItemModel(
@@ -57,7 +75,8 @@ class OrderModel {
   final double shippingFee;
   final double totalAmount;
   final String deliveryType; // 'delivery' | 'pickup'
-  final String status; // 'pending' -> 'preparing' -> 'delivering' -> 'completed' -> 'cancelled'
+  final String
+  status; // 'pending' -> 'preparing' -> 'delivering' -> 'completed' -> 'cancelled'
   final String shippingAddress;
   final String recipientName;
   final String recipientPhone;
