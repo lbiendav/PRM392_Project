@@ -8,6 +8,8 @@ class OrderItemModel {
   final int quantity;
   final String size;
   final List<String> toppings;
+  final int? sugarPercent;
+  final String? iceLevel;
   final String note;
 
   const OrderItemModel({
@@ -18,6 +20,8 @@ class OrderItemModel {
     required this.quantity,
     this.size = 'M',
     this.toppings = const [],
+    this.sugarPercent,
+    this.iceLevel,
     this.note = '',
   });
   OrderItemModel copyWith({
@@ -25,6 +29,8 @@ class OrderItemModel {
     double? price,
     String? size,
     List<String>? toppings,
+    int? sugarPercent,
+    String? iceLevel,
     String? note,
   }) {
     return OrderItemModel(
@@ -35,8 +41,22 @@ class OrderItemModel {
       quantity: quantity ?? this.quantity,
       size: size ?? this.size,
       toppings: toppings ?? this.toppings,
+      sugarPercent: sugarPercent ?? this.sugarPercent,
+      iceLevel: iceLevel ?? this.iceLevel,
       note: note ?? this.note,
     );
+  }
+
+  String get configurationKey {
+    final sortedToppings = [...toppings]..sort();
+    return [
+      productId,
+      size,
+      price.toStringAsFixed(2),
+      sugarPercent?.toString() ?? '',
+      iceLevel ?? '',
+      ...sortedToppings,
+    ].join('|');
   }
 
   factory OrderItemModel.fromMap(Map<String, dynamic> map) {
@@ -48,6 +68,8 @@ class OrderItemModel {
       quantity: (map['quantity'] as num?)?.toInt() ?? 1,
       size: map['size'] as String? ?? 'M',
       toppings: List<String>.from(map['toppings'] ?? const []),
+      sugarPercent: (map['sugarPercent'] as num?)?.toInt(),
+      iceLevel: map['iceLevel'] as String?,
       note: map['note'] as String? ?? '',
     );
   }
@@ -61,6 +83,8 @@ class OrderItemModel {
       'quantity': quantity,
       'size': size,
       'toppings': toppings,
+      if (sugarPercent != null) 'sugarPercent': sugarPercent,
+      if (iceLevel != null) 'iceLevel': iceLevel,
       'note': note,
     };
   }

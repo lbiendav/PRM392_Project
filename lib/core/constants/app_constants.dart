@@ -12,10 +12,12 @@ class AppConstants {
   static const String keySavedPassword = 'saved_password';
   static const String keyThemeMode = 'theme_mode'; // 'light', 'dark', 'system'
   static const String keySearchHistory = 'search_history';
+  static const String keyCatalogBranchId = 'catalog_branch_id';
 
   // Firestore Collections
   static const String colUsers = 'users';
   static const String colProducts = 'products';
+  static const String colBranches = 'branches';
   static const String colCategories = 'categories';
   static const String colOrders = 'orders';
   static const String colVouchers = 'vouchers';

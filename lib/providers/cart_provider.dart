@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import '../models/order_model.dart';
 
 class CartState {
@@ -20,7 +20,18 @@ class CartNotifier extends StateNotifier<CartState> {
   CartNotifier() : super(const CartState());
 
   void addItem(OrderItemModel item) {
-    state = state.copyWith(items: [...state.items, item]);
+    final items = [...state.items];
+    final index = items.indexWhere(
+      (current) => current.configurationKey == item.configurationKey,
+    );
+    if (index == -1) {
+      items.add(item);
+    } else {
+      items[index] = items[index].copyWith(
+        quantity: items[index].quantity + item.quantity,
+      );
+    }
+    state = state.copyWith(items: items);
   }
 
   void updateQuantity(int index, int quantity) {

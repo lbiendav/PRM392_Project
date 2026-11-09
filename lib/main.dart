@@ -8,8 +8,15 @@ import 'core/theme/app_theme.dart';
 import 'providers/auth_provider.dart';
 import 'providers/theme_provider.dart';
 import 'firebase_options.dart';
+import 'models/product_model.dart';
 import 'views/auth/login_screen.dart';
 import 'views/auth/onboarding_screen.dart';
+import 'views/home_catalog/category_menu_screen.dart';
+import 'views/home_catalog/home_screen.dart';
+import 'views/home_catalog/search_screen.dart';
+import 'views/home_catalog/store_branch_screen.dart';
+import 'views/product_cart/cart_summary_sheet.dart';
+import 'views/product_cart/product_detail_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,11 +31,7 @@ Future<void> main() async {
     debugPrint('Firebase initialize note: $e');
   }
 
-  runApp(
-    const ProviderScope(
-      child: CoffeeCraftApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: CoffeeCraftApp()));
 }
 
 class CoffeeCraftApp extends ConsumerWidget {
@@ -65,29 +68,51 @@ class AuthGate extends ConsumerWidget {
     }
 
     if (authState.isAuthenticated) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Trang Chủ'),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.logout),
-              onPressed: () => ref.read(authNotifierProvider.notifier).logout(),
-            ),
-          ],
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Xin chào, ${authState.userModel?.fullName ?? "Khách hàng"}!',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      return HomeScreen(
+        onOpenSearch: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => SearchScreen(
+              onOpenProduct: (product) => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => ProductDetailScreen(product: product),
+                ),
               ),
-              const SizedBox(height: 12),
-              const Text('Đăng nhập thành công 🎉'),
-            ],
+            ),
           ),
         ),
+        onOpenBranch: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (_) => const StoreBranchScreen()),
+        ),
+        onOpenCategory: (category) {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => CategoryMenuScreen(
+                initialCategory: category,
+                onOpenProduct: (product) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => ProductDetailScreen(product: product),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        },
+        onOpenProduct: (ProductModel product) {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => ProductDetailScreen(product: product),
+            ),
+          );
+        },
+        onOpenCart: () {
+          showModalBottomSheet<void>(
+            context: context,
+            builder: (_) => const CartSummarySheet(),
+          );
+        },
+        onLogout: () => ref.read(authNotifierProvider.notifier).logout(),
       );
     }
 
