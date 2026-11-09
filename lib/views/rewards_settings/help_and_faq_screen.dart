@@ -1,15 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/utils/snackbar_utils.dart';
+import '../../providers/auth_provider.dart';
 
-class HelpAndFAQScreen extends StatefulWidget {
+class HelpAndFAQScreen extends ConsumerStatefulWidget {
   const HelpAndFAQScreen({super.key});
 
   @override
-  State<HelpAndFAQScreen> createState() => _HelpAndFAQScreenState();
+  ConsumerState<HelpAndFAQScreen> createState() => _HelpAndFAQScreenState();
 }
 
-class _HelpAndFAQScreenState extends State<HelpAndFAQScreen> {
+class _HelpAndFAQScreenState extends ConsumerState<HelpAndFAQScreen> {
   final _feedbackController = TextEditingController();
   bool _isSubmitting = false;
 
@@ -34,7 +36,9 @@ class _HelpAndFAQScreenState extends State<HelpAndFAQScreen> {
 
     setState(() => _isSubmitting = true);
     try {
+      final userId = ref.read(authNotifierProvider).userModel?.id;
       await FirebaseFirestore.instance.collection('feedbacks').add({
+        'userId': userId,
         'content': text,
         'createdAt': FieldValue.serverTimestamp(),
       });

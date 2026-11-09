@@ -40,7 +40,9 @@ class _NotificationCenterScreenState extends State<NotificationCenterScreen> {
           TextButton(
             onPressed: () {
               setState(() {
-                // Đánh dấu tất cả là đã đọc
+                for (var i = 0; i < _notifications.length; i++) {
+                  _notifications[i] = _notifications[i].copyWith(isRead: true);
+                }
               });
             },
             child: const Text('Đã đọc tất cả'),
