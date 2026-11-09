@@ -5,16 +5,9 @@ import '../../core/utils/formatters.dart';
 import '../../core/utils/snackbar_utils.dart';
 import '../../models/voucher_model.dart';
 
-class VoucherWalletScreen extends StatefulWidget {
-  final bool isSelectMode;
-  const VoucherWalletScreen({super.key, this.isSelectMode = false});
-
-  @override
-  State<VoucherWalletScreen> createState() => _VoucherWalletScreenState();
-}
-
-class _VoucherWalletScreenState extends State<VoucherWalletScreen> {
-  final List<VoucherModel> _vouchers = [
+List<VoucherModel> buildDefaultWalletVouchers() {
+  final now = DateTime.now();
+  return [
     VoucherModel(
       id: 'v1',
       code: 'FREESHIP18K',
@@ -23,7 +16,7 @@ class _VoucherWalletScreenState extends State<VoucherWalletScreen> {
       discountType: 'freeship',
       discountValue: 18000,
       minOrderAmount: 50000,
-      expiryDate: DateTime.now().add(const Duration(days: 7)),
+      expiryDate: now.add(const Duration(days: 7)),
     ),
     VoucherModel(
       id: 'v2',
@@ -34,7 +27,7 @@ class _VoucherWalletScreenState extends State<VoucherWalletScreen> {
       discountValue: 20,
       minOrderAmount: 40000,
       maxDiscount: 30000,
-      expiryDate: DateTime.now().add(const Duration(days: 14)),
+      expiryDate: now.add(const Duration(days: 14)),
     ),
     VoucherModel(
       id: 'v3',
@@ -44,9 +37,31 @@ class _VoucherWalletScreenState extends State<VoucherWalletScreen> {
       discountType: 'fixed',
       discountValue: 50000,
       minOrderAmount: 100000,
-      expiryDate: DateTime.now().add(const Duration(days: 30)),
+      expiryDate: now.add(const Duration(days: 30)),
+    ),
+    VoucherModel(
+      id: 'v4',
+      code: 'REWARD20K',
+      title: 'Voucher Đổi Điểm Giảm 20.000đ',
+      description: 'Ưu đãi dành cho thành viên đổi điểm thưởng CoffeeCraft',
+      discountType: 'fixed',
+      discountValue: 20000,
+      minOrderAmount: 40000,
+      expiryDate: now.add(const Duration(days: 30)),
     ),
   ];
+}
+
+class VoucherWalletScreen extends StatefulWidget {
+  final bool isSelectMode;
+  const VoucherWalletScreen({super.key, this.isSelectMode = false});
+
+  @override
+  State<VoucherWalletScreen> createState() => _VoucherWalletScreenState();
+}
+
+class _VoucherWalletScreenState extends State<VoucherWalletScreen> {
+  late final List<VoucherModel> _vouchers = buildDefaultWalletVouchers();
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +74,9 @@ class _VoucherWalletScreenState extends State<VoucherWalletScreen> {
           final v = _vouchers[index];
           return Card(
             margin: const EdgeInsets.only(bottom: 14),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -86,23 +103,33 @@ class _VoucherWalletScreenState extends State<VoucherWalletScreen> {
                       children: [
                         Text(
                           v.title,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           v.description,
                           style: TextStyle(
                             fontSize: 12,
-                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withValues(alpha: 0.7),
                           ),
                         ),
                         const SizedBox(height: 6),
                         Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
                               decoration: BoxDecoration(
-                                color: AppColors.secondary.withValues(alpha: 0.2),
+                                color: AppColors.secondary.withValues(
+                                  alpha: 0.2,
+                                ),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
@@ -117,7 +144,10 @@ class _VoucherWalletScreenState extends State<VoucherWalletScreen> {
                             const Spacer(),
                             Text(
                               'HSD: ${AppFormatters.formatDate(v.expiryDate)}',
-                              style: const TextStyle(fontSize: 11, color: Colors.grey),
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: Colors.grey,
+                              ),
                             ),
                           ],
                         ),
@@ -132,7 +162,10 @@ class _VoucherWalletScreenState extends State<VoucherWalletScreen> {
                     ),
                     onPressed: () {
                       Clipboard.setData(ClipboardData(text: v.code));
-                      SnackBarUtils.showSuccess(context, 'Đã sao chép mã ${v.code}!');
+                      SnackBarUtils.showSuccess(
+                        context,
+                        'Đã sao chép mã ${v.code}!',
+                      );
                       if (widget.isSelectMode) {
                         Navigator.of(context).pop(v);
                       }

@@ -29,7 +29,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     super.dispose();
   }
 
-  // Khởi động bộ đếm 60 giây
   void _startCountdown([int seconds = 60]) {
     setState(() {
       _countdownSeconds = seconds;
@@ -134,8 +133,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                   ),
                 ),
                 const SizedBox(height: 36),
-
-                // Ô nhập Email
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -148,8 +145,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-
-                // Nút Gửi liên kết hoặc hiển thị đếm ngược 60s
                 ElevatedButton(
                   onPressed: (authState.isLoading || _countdownSeconds > 0)
                       ? null
@@ -164,26 +159,24 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                   ),
                   child: authState.isLoading
                       ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.5,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  )
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
                       : Text(
-                    _countdownSeconds > 0
-                        ? 'Gửi lại sau ($_countdownSeconds s)'
-                        : (_hasSentEmail ? 'Gửi lại email' : 'Gửi liên kết khôi phục'),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                          _countdownSeconds > 0
+                              ? 'Gửi lại sau ($_countdownSeconds s)'
+                              : (_hasSentEmail ? 'Gửi lại email' : 'Gửi liên kết khôi phục'),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
                 const SizedBox(height: 24),
-
-                // Quay lại Đăng nhập
                 Center(
                   child: TextButton.icon(
                     onPressed: () => Navigator.of(context).pop(),

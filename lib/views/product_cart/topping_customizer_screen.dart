@@ -42,9 +42,22 @@ class _ToppingCustomizerScreenState extends State<ToppingCustomizerScreen> {
   double get _totalPrice =>
       widget.basePrice + calculateToppingTotal(_selectedToppings);
 
+  List<String> get _availableToppings {
+    if (widget.product.toppings.isNotEmpty) {
+      return widget.product.toppings;
+    }
+    if (widget.product.toppingOptions.isNotEmpty) {
+      return widget.product.toppingOptions.map((e) => e.name).toList();
+    }
+    if (widget.product.supportsDrinkOptions) {
+      return toppingPrices.keys.toList();
+    }
+    return const [];
+  }
+
   @override
   Widget build(BuildContext context) {
-    final toppings = widget.product.toppings;
+    final toppings = _availableToppings;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Tùy chỉnh món')),
@@ -90,7 +103,11 @@ class _ToppingCustomizerScreenState extends State<ToppingCustomizerScreen> {
             const Text('Món này chưa có topping.')
           else
             ...toppings.map((topping) {
-              final price = toppingPrices[topping] ?? 5000;
+              final optionPrice = widget.product.toppingOptions
+                  .where((e) => e.name == topping)
+                  .firstOrNull
+                  ?.price;
+              final price = optionPrice ?? toppingPrices[topping] ?? 5000;
 
               return CheckboxListTile(
                 contentPadding: EdgeInsets.zero,

@@ -5,6 +5,9 @@ import '../../core/utils/formatters.dart';
 import '../../models/order_model.dart';
 import '../../models/product_model.dart';
 import '../../providers/cart_provider.dart';
+import '../../providers/favorites_provider.dart';
+import '../home_catalog/widgets/product_photo.dart';
+import 'product_detail_screen.dart';
 
 class FavoritesScreen extends ConsumerStatefulWidget {
   final List<ProductModel> initialFavorites;
@@ -16,12 +19,18 @@ class FavoritesScreen extends ConsumerStatefulWidget {
 }
 
 class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
-  late final List<ProductModel> _favorites;
-
   @override
   void initState() {
     super.initState();
-    _favorites = [...widget.initialFavorites];
+    if (widget.initialFavorites.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ref
+              .read(favoritesProvider.notifier)
+              .seedFavorites(widget.initialFavorites);
+        }
+      });
+    }
   }
 
   void _addToCart(ProductModel product) {
@@ -47,9 +56,11 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final favorites = ref.watch(favoritesProvider);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Món yêu thích')),
-      body: _favorites.isEmpty
+      body: favorites.isEmpty
           ? const Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -62,39 +73,30 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
             )
           : ListView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount: _favorites.length,
+              itemCount: favorites.length,
               itemBuilder: (context, index) {
-                final product = _favorites[index];
+                final product = favorites[index];
 
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12),
                   child: ListTile(
-                    leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: product.imageUrl.isEmpty
-                          ? const SizedBox(
-                              width: 56,
-                              height: 56,
-                              child: ColoredBox(
-                                color: Colors.black12,
-                                child: Icon(Icons.local_cafe),
-                              ),
-                            )
-                          : Image.network(
-                              product.imageUrl,
-                              width: 56,
-                              height: 56,
-                              fit: BoxFit.cover,
-                              semanticLabel: product.name,
-                              errorBuilder: (_, _, _) => const SizedBox(
-                                width: 56,
-                                height: 56,
-                                child: ColoredBox(
-                                  color: Colors.black12,
-                                  child: Icon(Icons.broken_image_outlined),
-                                ),
-                              ),
-                            ),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => ProductDetailScreen(product: product),
+                        ),
+                      );
+                    },
+                    leading: SizedBox(
+                      width: 56,
+                      height: 56,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: ProductPhoto(
+                          source: product.imageUrl,
+                          label: product.name,
+                        ),
+                      ),
                     ),
                     title: Text(product.name),
                     subtitle: Text(AppFormatters.formatCurrency(product.price)),
@@ -111,7 +113,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                         IconButton(
                           tooltip: 'Bỏ yêu thích',
                           onPressed: () {
-                            setState(() => _favorites.removeAt(index));
+                            ref
+                                .read(favoritesProvider.notifier)
+                                .removeFavorite(product.id);
                           },
                           icon: const Icon(Icons.favorite, color: Colors.red),
                         ),

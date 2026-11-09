@@ -14,6 +14,8 @@ class HomeScreen extends ConsumerWidget {
   final ValueChanged<String>? onOpenCategory;
   final VoidCallback? onOpenSearch;
   final VoidCallback? onOpenBranch;
+  final VoidCallback? onOpenNotifications;
+  final VoidCallback? onOpenFavorites;
   final VoidCallback onOpenCart;
   final VoidCallback? onLogout;
   const HomeScreen({
@@ -23,6 +25,8 @@ class HomeScreen extends ConsumerWidget {
     this.onOpenCategory,
     this.onOpenSearch,
     this.onOpenBranch,
+    this.onOpenNotifications,
+    this.onOpenFavorites,
     this.onLogout,
   });
 
@@ -61,6 +65,18 @@ class HomeScreen extends ConsumerWidget {
               tooltip: 'Tìm kiếm',
               onPressed: onOpenSearch,
               icon: const Icon(Icons.search),
+            ),
+          if (onOpenFavorites != null)
+            IconButton(
+              tooltip: 'Món yêu thích',
+              onPressed: onOpenFavorites,
+              icon: const Icon(Icons.favorite_border),
+            ),
+          if (onOpenNotifications != null)
+            IconButton(
+              tooltip: 'Thông báo',
+              onPressed: onOpenNotifications,
+              icon: const Icon(Icons.notifications_none_rounded),
             ),
           Padding(
             padding: const EdgeInsets.only(right: 12),

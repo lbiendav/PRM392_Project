@@ -9,7 +9,6 @@ import '../../providers/auth_provider.dart';
 import 'forgot_password_screen.dart';
 import 'register_screen.dart';
 
-
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -31,7 +30,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     _loadSavedCredentials();
   }
 
-  // Đọc thông tin đã lưu từ SharedPreferences nếu người dùng từng tích "Ghi nhớ"
   Future<void> _loadSavedCredentials() async {
     final prefs = await SharedPrefsService.getInstance();
     if (prefs.isRememberMe) {
@@ -55,7 +53,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       return;
     }
 
-    // Ẩn bàn phím ảo
     FocusScope.of(context).unfocus();
 
     final success = await ref.read(authNotifierProvider.notifier).login(
@@ -68,7 +65,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     if (success) {
       SnackBarUtils.showSuccess(context, 'Đăng nhập thành công! Chào mừng bạn.');
-      // AuthGate trong main.dart sẽ tự động lắng nghe và chuyển vào màn hình chính
     } else {
       final error = ref.read(authNotifierProvider).errorMessage ?? 'Đăng nhập thất bại';
       SnackBarUtils.showError(context, error);
@@ -108,7 +104,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 10),
-                  // Logo ứng dụng
                   Center(
                     child: Container(
                       width: 86,
@@ -132,7 +127,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 26),
-
                   Text(
                     'Chào Mừng Trở Lại!',
                     textAlign: TextAlign.center,
@@ -149,8 +143,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 36),
-
-                  // Ô nhập Email
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -164,8 +156,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 18),
-
-                  // Ô nhập Mật khẩu
                   TextFormField(
                     controller: _passwordController,
                     obscureText: !_isPasswordVisible,
@@ -196,8 +186,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-
-                  // Checkbox Ghi nhớ đăng nhập & Nút Quên mật khẩu
                   Row(
                     children: [
                       SizedBox(
@@ -245,8 +233,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ],
                   ),
                   const SizedBox(height: 24),
-
-                  // Nút Đăng nhập chính
                   ElevatedButton(
                     onPressed: authState.isLoading ? null : _handleLogin,
                     style: ElevatedButton.styleFrom(
@@ -259,24 +245,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     child: authState.isLoading
                         ? const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
                         : const Text(
-                      'Đăng Nhập',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                            'Đăng Nhập',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                   const SizedBox(height: 24),
-
-                  // Phân cách HOẶC
                   Row(
                     children: [
                       Expanded(child: Divider(color: theme.dividerColor, thickness: 1)),
@@ -295,8 +279,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ],
                   ),
                   const SizedBox(height: 20),
-
-                  // Nút Đăng nhập Google
                   OutlinedButton.icon(
                     onPressed: authState.isLoading ? null : _handleGoogleLogin,
                     icon: Container(
@@ -329,8 +311,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 32),
-
-                  // Chuyển sang màn hình Đăng ký
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

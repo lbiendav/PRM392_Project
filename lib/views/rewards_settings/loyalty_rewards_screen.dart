@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/snackbar_utils.dart';
 import '../../providers/auth_provider.dart';
+import 'voucher_wallet_screen.dart';
 
 class LoyaltyRewardsScreen extends ConsumerWidget {
   const LoyaltyRewardsScreen({super.key});
@@ -31,7 +32,22 @@ class LoyaltyRewardsScreen extends ConsumerWidget {
     final progress = (points / nextMilestone).clamp(0.0, 1.0);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Thẻ Thành Viên & Điểm Thưởng')),
+      appBar: AppBar(
+        title: const Text('Thẻ Thành Viên & Điểm Thưởng'),
+        actions: [
+          IconButton(
+            tooltip: 'Ví khuyến mãi',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const VoucherWalletScreen(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.confirmation_number_outlined),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -177,8 +193,11 @@ class LoyaltyRewardsScreen extends ConsumerWidget {
           ),
           onPressed: canRedeem
               ? () {
-            SnackBarUtils.showSuccess(context, 'Đổi quà thành công!');
-          }
+                  SnackBarUtils.showSuccess(
+                    context,
+                    'Đổi quà "$title" thành công! Kiểm tra Ví khuyến mãi của bạn.',
+                  );
+                }
               : null,
           child: const Text('Đổi'),
         ),

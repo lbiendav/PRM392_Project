@@ -10,6 +10,7 @@ import 'address_management_screen.dart';
 import 'checkout_data.dart';
 import 'order_tracking_screen.dart';
 import 'payment_method_screen.dart';
+import '../rewards_settings/voucher_wallet_screen.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key});
@@ -57,6 +58,20 @@ class _CheckoutState extends ConsumerState<CheckoutScreen> {
       MaterialPageRoute(builder: (_) => PaymentMethodScreen(initial: _payment)),
     );
     if (mounted && payment != null) setState(() => _payment = payment);
+  }
+
+  Future<void> _chooseVoucherFromWallet() async {
+    final selected = await Navigator.of(context).push<VoucherModel>(
+      MaterialPageRoute(
+        builder: (_) => const VoucherWalletScreen(isSelectMode: true),
+      ),
+    );
+    if (mounted && selected != null) {
+      setState(() {
+        _voucherCode.text = selected.code;
+        _voucher = selected;
+      });
+    }
   }
 
   Future<void> _applyVoucher() async {
@@ -228,7 +243,16 @@ class _CheckoutState extends ConsumerState<CheckoutScreen> {
                   child: TextField(
                     controller: _voucherCode,
                     enabled: !_placingOrder && !_checkingVoucher,
-                    decoration: const InputDecoration(labelText: 'Mã giảm giá'),
+                    decoration: InputDecoration(
+                      labelText: 'Mã giảm giá',
+                      suffixIcon: IconButton(
+                        tooltip: 'Chọn từ Ví khuyến mãi',
+                        onPressed: _placingOrder || _checkingVoucher
+                            ? null
+                            : _chooseVoucherFromWallet,
+                        icon: const Icon(Icons.confirmation_number_outlined),
+                      ),
+                    ),
                     textCapitalization: TextCapitalization.characters,
                     onChanged: (_) {
                       if (_voucher != null) setState(() => _voucher = null);

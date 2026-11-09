@@ -5,6 +5,10 @@ import '../../core/utils/formatters.dart';
 import '../../models/order_model.dart';
 import '../../models/product_model.dart';
 import '../../providers/cart_provider.dart';
+import '../../providers/favorites_provider.dart';
+import '../home_catalog/widgets/product_photo.dart';
+import 'cart_screen.dart';
+import 'product_reviews_screen.dart';
 import 'topping_customizer_screen.dart';
 
 double productPriceForSize(double basePrice, String size) {
@@ -69,7 +73,17 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         );
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Đã thêm ${widget.product.name} vào giỏ hàng')),
+      SnackBar(
+        content: Text('Đã thêm ${widget.product.name} vào giỏ hàng'),
+        action: SnackBarAction(
+          label: 'Xem giỏ',
+          onPressed: () {
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute<void>(builder: (_) => const CartScreen()));
+          },
+        ),
+      ),
     );
   }
 
@@ -77,9 +91,51 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   Widget build(BuildContext context) {
     final product = widget.product;
     final theme = Theme.of(context);
+    final isFavorite = ref.watch(
+      favoritesProvider.select(
+        (items) => items.any((item) => item.id == product.id),
+      ),
+    );
+    final cartCount = ref.watch(cartProvider).totalItemCount;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Chi tiết món')),
+      appBar: AppBar(
+        title: const Text('Chi tiết món'),
+        actions: [
+          IconButton(
+            tooltip: isFavorite ? 'Bỏ yêu thích' : 'Yêu thích',
+            onPressed: () {
+              ref.read(favoritesProvider.notifier).toggleFavorite(product);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    isFavorite
+                        ? 'Đã xóa khỏi danh sách yêu thích'
+                        : 'Đã thêm vào danh sách yêu thích',
+                  ),
+                ),
+              );
+            },
+            icon: Icon(
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? Colors.red : null,
+            ),
+          ),
+          IconButton(
+            tooltip: 'Giỏ hàng',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(builder: (_) => const CartScreen()),
+              );
+            },
+            icon: Badge(
+              isLabelVisible: cartCount > 0,
+              label: Text('$cartCount'),
+              child: const Icon(Icons.shopping_bag_outlined),
+            ),
+          ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -87,20 +143,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             aspectRatio: 16 / 10,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: product.imageUrl.isEmpty
-                  ? const ColoredBox(
-                      color: Colors.black12,
-                      child: Icon(Icons.local_cafe, size: 72),
-                    )
-                  : Image.network(
-                      product.imageUrl,
-                      fit: BoxFit.cover,
-                      semanticLabel: product.name,
-                      errorBuilder: (_, _, _) => const ColoredBox(
-                        color: Colors.black12,
-                        child: Icon(Icons.broken_image_outlined, size: 64),
-                      ),
-                    ),
+              child: ProductPhoto(
+                source: product.imageUrl,
+                label: product.name,
+              ),
             ),
           ),
           const SizedBox(height: 20),
@@ -111,6 +157,21 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               const Icon(Icons.star, color: Colors.amber, size: 20),
               const SizedBox(width: 4),
               Text('${product.rating} (${product.reviewCount} đánh giá)'),
+              const Spacer(),
+              TextButton.icon(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => ProductReviewsScreen(
+                        productId: product.id,
+                        productName: product.name,
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.rate_review_outlined, size: 18),
+                label: const Text('Đánh giá'),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -194,20 +255,28 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           ],
           const SizedBox(height: 24),
           Text('Số lượng', style: theme.textTheme.titleMedium),
-          Row(
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            runSpacing: 8,
             children: [
-              IconButton(
-                tooltip: 'Giảm số lượng',
-                onPressed: _quantity > 1
-                    ? () => setState(() => _quantity--)
-                    : null,
-                icon: const Icon(Icons.remove_circle_outline),
-              ),
-              Text('$_quantity', style: theme.textTheme.titleMedium),
-              IconButton(
-                tooltip: 'Tăng số lượng',
-                onPressed: () => setState(() => _quantity++),
-                icon: const Icon(Icons.add_circle_outline),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    tooltip: 'Giảm số lượng',
+                    onPressed: _quantity > 1
+                        ? () => setState(() => _quantity--)
+                        : null,
+                    icon: const Icon(Icons.remove_circle_outline),
+                  ),
+                  Text('$_quantity', style: theme.textTheme.titleMedium),
+                  IconButton(
+                    tooltip: 'Tăng số lượng',
+                    onPressed: () => setState(() => _quantity++),
+                    icon: const Icon(Icons.add_circle_outline),
+                  ),
+                ],
               ),
               OutlinedButton.icon(
                 onPressed: product.isAvailable ? _customizeAndAdd : null,

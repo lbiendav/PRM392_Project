@@ -10,6 +10,7 @@ import '../../models/order_model.dart';
 import '../../models/voucher_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../repositories/order_repository.dart';
+import '../rewards_settings/voucher_wallet_screen.dart';
 
 final checkoutUserIdProvider = Provider<String?>((ref) {
   return ref.watch(
@@ -119,16 +120,30 @@ class CheckoutData {
       _addressBook(uid).collection('ids').doc().id;
 
   Future<VoucherModel?> findVoucher(String code) async {
-    final snapshot = await _db
-        .collection(AppConstants.colVouchers)
-        .where('code', isEqualTo: code.trim().toUpperCase())
-        .get();
-    final vouchers = snapshot.docs.map(
-      (doc) => VoucherModel.fromMap(doc.data(), doc.id),
-    );
-    return vouchers
+    final normalizedCode = code.trim().toUpperCase();
+    try {
+      final snapshot = await _db
+          .collection(AppConstants.colVouchers)
+          .where('code', isEqualTo: normalizedCode)
+          .get();
+      final vouchers = snapshot.docs.map(
+        (doc) => VoucherModel.fromMap(doc.data(), doc.id),
+      );
+      final match = vouchers
+          .where(
+            (voucher) =>
+                voucher.isActive &&
+                (voucher.expiryDate?.isAfter(DateTime.now()) ?? true),
+          )
+          .firstOrNull;
+      if (match != null) return match;
+    } catch (_) {
+      // Fallback to built-in wallet vouchers if Firestore lookup fails.
+    }
+    return buildDefaultWalletVouchers()
         .where(
           (voucher) =>
+              voucher.code.toUpperCase() == normalizedCode &&
               voucher.isActive &&
               (voucher.expiryDate?.isAfter(DateTime.now()) ?? true),
         )

@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/utils/formatters.dart';
 import '../../providers/cart_provider.dart';
+import '../checkout_order/checkout_screen.dart';
+import '../home_catalog/widgets/product_photo.dart';
 
 class CartScreen extends ConsumerWidget {
   const CartScreen({super.key});
 
-  static const double shippingFee = 15000;
+  static const double shippingFee = 18000;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,9 +57,17 @@ class CartScreen extends ConsumerWidget {
         itemCount: cart.items.length,
         itemBuilder: (context, index) {
           final item = cart.items[index];
+          final options = <String>[
+            if (item.sugarPercent != null) 'Đường ${item.sugarPercent}%',
+            if (item.iceLevel == 'less') 'Ít đá',
+            if (item.iceLevel == 'none') 'Không đá',
+            if (item.iceLevel == 'normal') 'Đá bình thường',
+            if (item.toppings.isNotEmpty) item.toppings.join(', '),
+            if (item.note.isNotEmpty) item.note,
+          ];
 
           return Dismissible(
-            key: ValueKey('${item.productId}-$index'),
+            key: ValueKey('${item.configurationKey}-$index'),
             direction: DismissDirection.endToStart,
             onDismissed: (_) => notifier.removeItem(index),
             background: Container(
@@ -72,31 +82,16 @@ class CartScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(12),
                 child: Row(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: item.imageUrl.isEmpty
-                          ? const SizedBox(
-                              width: 70,
-                              height: 70,
-                              child: ColoredBox(
-                                color: Colors.black12,
-                                child: Icon(Icons.local_cafe),
-                              ),
-                            )
-                          : Image.network(
-                              item.imageUrl,
-                              width: 70,
-                              height: 70,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, _, _) => const SizedBox(
-                                width: 70,
-                                height: 70,
-                                child: ColoredBox(
-                                  color: Colors.black12,
-                                  child: Icon(Icons.broken_image_outlined),
-                                ),
-                              ),
-                            ),
+                    SizedBox(
+                      width: 70,
+                      height: 70,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: ProductPhoto(
+                          source: item.imageUrl,
+                          label: item.productName,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -109,11 +104,12 @@ class CartScreen extends ConsumerWidget {
                           ),
                           const SizedBox(height: 4),
                           Text('Size ${item.size}'),
-                          if (item.toppings.isNotEmpty)
+                          if (options.isNotEmpty)
                             Text(
-                              item.toppings.join(', '),
-                              maxLines: 1,
+                              options.join(' • '),
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           const SizedBox(height: 4),
                           Text(
@@ -155,21 +151,22 @@ class CartScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             _TotalRow(label: 'Tạm tính', value: cart.subtotal),
-            _TotalRow(label: 'Phí giao hàng', value: shippingFee),
+            _TotalRow(label: 'Phí giao hàng dự kiến', value: shippingFee),
             const Divider(),
             _TotalRow(label: 'Tổng cộng', value: total, emphasized: true),
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
-              child: FilledButton(
+              child: FilledButton.icon(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Chức năng đặt hàng sẽ nối với Member 4'),
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const CheckoutScreen(),
                     ),
                   );
                 },
-                child: const Text('Tiến hành đặt hàng'),
+                icon: const Icon(Icons.shopping_cart_checkout),
+                label: const Text('Tiến hành đặt hàng'),
               ),
             ),
           ],

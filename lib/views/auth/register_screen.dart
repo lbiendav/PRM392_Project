@@ -96,8 +96,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 28),
-
-                // Họ và tên
                 TextFormField(
                   controller: _fullNameController,
                   keyboardType: TextInputType.name,
@@ -110,8 +108,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-
-                // Email
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -125,8 +121,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-
-                // Số điện thoại
                 TextFormField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
@@ -139,8 +133,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-
-                // Mật khẩu
                 TextFormField(
                   controller: _passwordController,
                   obscureText: !_isPasswordVisible,
@@ -165,8 +157,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-
-                // Xác nhận mật khẩu
                 TextFormField(
                   controller: _confirmPasswordController,
                   obscureText: !_isConfirmPasswordVisible,
@@ -195,8 +185,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 30),
-
-                // Nút Đăng ký
                 ElevatedButton(
                   onPressed: authState.isLoading ? null : _handleRegister,
                   style: ElevatedButton.styleFrom(
@@ -209,24 +197,22 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
                   child: authState.isLoading
                       ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.5,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  )
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
                       : const Text(
-                    'Đăng Ký',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                          'Đăng Ký',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
                 const SizedBox(height: 24),
-
-                // Quay lại Đăng nhập
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
