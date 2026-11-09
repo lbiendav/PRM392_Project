@@ -40,6 +40,19 @@ class NotificationItemModel {
     );
   }
 
+  NotificationItemModel copyWith({bool? isRead}) {
+    return NotificationItemModel(
+      id: id,
+      userId: userId,
+      title: title,
+      body: body,
+      type: type,
+      targetId: targetId,
+      isRead: isRead ?? this.isRead,
+      createdAt: createdAt,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'userId': userId,
