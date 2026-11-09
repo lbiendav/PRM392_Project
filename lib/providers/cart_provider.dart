@@ -34,6 +34,19 @@ class CartNotifier extends StateNotifier<CartState> {
     state = state.copyWith(items: items);
   }
 
+  void updateQuantity(int index, int quantity) {
+    if (index < 0 || index >= state.items.length) return;
+
+    if (quantity <= 0) {
+      removeItem(index);
+      return;
+    }
+
+    final list = [...state.items];
+    list[index] = list[index].copyWith(quantity: quantity);
+    state = state.copyWith(items: list);
+  }
+
   void removeItem(int index) {
     final list = [...state.items];
     if (index >= 0 && index < list.length) {

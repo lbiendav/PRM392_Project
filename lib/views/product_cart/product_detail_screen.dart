@@ -5,6 +5,7 @@ import '../../core/utils/formatters.dart';
 import '../../models/order_model.dart';
 import '../../models/product_model.dart';
 import '../../providers/cart_provider.dart';
+import 'topping_customizer_screen.dart';
 
 double productPriceForSize(double basePrice, String size) {
   return basePrice +
@@ -208,6 +209,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 onPressed: () => setState(() => _quantity++),
                 icon: const Icon(Icons.add_circle_outline),
               ),
+              OutlinedButton.icon(
+                onPressed: product.isAvailable ? _customizeAndAdd : null,
+                icon: const Icon(Icons.tune),
+                label: const Text('Tùy chỉnh topping và thêm vào giỏ'),
+              ),
             ],
           ),
         ],
@@ -224,6 +230,44 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _customizeAndAdd() async {
+    final result = await Navigator.of(context).push<Map<String, dynamic>>(
+      MaterialPageRoute(
+        builder: (_) => ToppingCustomizerScreen(
+          product: widget.product,
+          size: _selectedSize,
+          basePrice: _unitPrice,
+        ),
+      ),
+    );
+
+    if (!mounted || result == null) return;
+
+    final toppings = List<String>.from(result['toppings'] as List);
+    final price = result['price'] as double;
+    final sugar = result['sugar'] as String;
+    final ice = result['ice'] as String;
+
+    ref
+        .read(cartProvider.notifier)
+        .addItem(
+          OrderItemModel(
+            productId: widget.product.id,
+            productName: widget.product.name,
+            imageUrl: widget.product.imageUrl,
+            price: price,
+            quantity: _quantity,
+            size: _selectedSize,
+            toppings: toppings,
+            note: 'Đường: $sugar, đá: $ice',
+          ),
+        );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Đã thêm món tùy chỉnh vào giỏ hàng')),
     );
   }
 }

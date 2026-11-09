@@ -24,6 +24,24 @@ class OrderItemModel {
     this.iceLevel,
     this.note = '',
   });
+  OrderItemModel copyWith({
+    int? quantity,
+    double? price,
+    String? size,
+    List<String>? toppings,
+    String? note,
+  }) {
+    return OrderItemModel(
+      productId: productId,
+      productName: productName,
+      imageUrl: imageUrl,
+      price: price ?? this.price,
+      quantity: quantity ?? this.quantity,
+      size: size ?? this.size,
+      toppings: toppings ?? this.toppings,
+      note: note ?? this.note,
+    );
+  }
 
   String get configurationKey {
     final sortedToppings = [...toppings]..sort();
